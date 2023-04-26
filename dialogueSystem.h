@@ -60,4 +60,11 @@ namespace DialogueSystem
 		// Frame counter. Specifies how many game frames left for the object to vanish.
 		short							frameCounter;
 	};
+
+	// Dialogue -> Text class.
+	class DialogueText : public DialogueBase
+	{
+		// Gets the type of this Dialogue object.
+		DialogueTypes					GetDialogueType();
+	};
 }

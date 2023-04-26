@@ -103,6 +103,7 @@
     <ClInclude Include="trng.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dialogueSystem.cpp" />
     <ClCompile Include="PlugIn_trng.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="trng.cpp" />
