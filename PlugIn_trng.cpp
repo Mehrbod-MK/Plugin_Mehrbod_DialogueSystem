@@ -5,35 +5,8 @@
 
 // ************  Top/Header section ************
 
-#include "stdafx.h"
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include "bass.h"		// prototypes for extra sound library: bass.dll
-// Following header files will be updated for every new version of 
-// the tomb_NextGeneration.dll, so it's better you don't change them
-//  because they will be replaced for any new update.
-
-#include "Tomb_NextGeneration.h" // mnemonic constants defined in tomb_NextGeneration.dll
-#include "structures.h" // structure of tomb4 program and trng dll
-#include "DefTomb4Funct.h" // defines of tomb4 procedure prototypes
-#include "functions.h"  // assigments of real tomb4 address to each tomb4 procedures
-#include "macros.h"  // definition of macros
-
-	// FOR_YOU:
-	// While the followings are the headers you can use 
-	// to type your structures, constants and new tomb4 procedures you 
-	// discovered. 
-	// Following files are only yours and trng will not ever change them:
-#include "macros_mine.h"  // here you define your own macros
-#include "constants_mine.h" // here you define your mnemonic constants
-#include "structures_mine.h" // here you type your structure definitions
-#include "Tomb4Discoveries_mine.h" // here type tomb4 procedures you discovered
-
-#include "trng.h" // list of trng functions imported from trng.cpp source. 
-
-// Mehrbod MK - Dialogue System Include.
-#include "dialogueSystem.h"
+// Primary include for Plugin_TRNG.cpp.
+#include "PlugIn_trng.h"
 
 #pragma warning( error : 4706 )
 #pragma warning(disable: 4996)
@@ -166,9 +139,9 @@ void cbInitProgram(int NumberLoadedPlugins, char *VetPluginNames[])
 void cbInitGame(void)
 {
 	// here you can initialize your global data for whole adventure
-	// this procedure will be called only once, before loading title level
+	// this procedure will be called only once, before loading title level	
 
-
+	
 }
 
 void cbInitLevel(void)
@@ -567,7 +540,18 @@ void cbParametersMine(WORD ParameterValue, int NumberOfItems, short *pItemArray)
 // this procedure will be called every game cycle (at begin of cycle)
 void cbCycleBegin(void)
 {
-
+	Get(enumGET.GAME_INFO, 0, 0);
+	if (GET.GameInfo.LevelIndex == 1)
+	{
+		Get(enumGET.ITEM, 21 | NGLE_INDEX, 0);
+		Get(enumGET.LARA, 0, 0);
+		int dist = GetDistanceXZY(GET.pLara->CordX, GET.pLara->CordY, GET.pLara->CordZ, GET.pItem->CordX, GET.pItem->CordY, GET.pItem->CordZ);
+		GET.pItem->MeshVisibilityMask;
+		if(dist < 1024)
+		{
+			PerformTriggerGroup(4);
+		}
+	}
 }
 
 // Not yet linked! To link it add to RequireMyCallBacks() function the row:
@@ -617,6 +601,30 @@ void cbInitObjects(void)
 
 }
 
+#include <stdlib.h>
+
+// Direct3D Draw Sub-routine.
+void cbDirect3DDraw(void)
+{
+	// TODO: Remove.
+	Get(enumGET.GAME_INFO, 0, 0);
+	if (GET.GameInfo.LevelIndex != 1)
+		return;
+
+	Get(enumGET.ITEM, 21 | NGLE_INDEX, 0);
+	// Get(enumGET.LARA, 0, 0);
+	// int dist = GetDistanceXZY(GET.pLara->CordX, GET.pLara->CordY, GET.pLara->CordZ, GET.pItem->CordX, GET.pItem->CordY, GET.pItem->CordZ);
+
+	char buffer[20];
+	// Object buttons -> 32768 when picked up.
+	itoa((int)GET.pItem->Objectbuttons, &buffer[0], 10);
+	RECT pRect;
+	pRect.left = 500;
+	pRect.top = 500;
+	ConvertMicroUnits(&pRect);
+	PrintText(500, 500, &buffer[0], enumFT.SIZE_ATOMIC_CHAR, enumFC.WHITE, enumFTS.ALIGN_CENTER);
+}
+
 
 // FOR_YOU:
 // in this function RequireMyCallBacks() you'll type
@@ -645,6 +653,8 @@ bool RequireMyCallBacks(void)
 	GET_CALLBACK(CB_PROGR_ACTION_MINE, 0, 0, cbProgrActionMine);
 	GET_CALLBACK(CB_INIT_OBJECTS, 0, 0, cbInitObjects);
 
+	// Direct3D Draw Callbacks.
+	GET_CALLBACK(CB_LARA_DRAW, CBT_AFTER, 0, cbDirect3DDraw)
 
 	return true;
 }

@@ -54,6 +54,12 @@
     <ClInclude Include="dialogueSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlugIn_trng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="objectSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trng.cpp">
@@ -66,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dialogueSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="objectSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

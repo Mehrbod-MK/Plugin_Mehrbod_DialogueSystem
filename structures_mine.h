@@ -4,6 +4,8 @@
 // TYPE_HERE: here you can type your structure definitions like it has been done
 // in the "structures.h" file for trng dll
 
+#include "dialogueSystem.h"
+
 // --------------- PRESET STRUCTURE ZONE -----------------------------
 // Please, don't remove structures and fields you find in this "PRESET ZONE". They will be used by some
 // preset functions of your plugin sources
@@ -14,7 +16,6 @@ typedef struct StrSavegameGlobalData {
 	//           (only one for all levels)
 	// note: the size of this structure should be always even (if you add BYTE variable, remember to compensate that 
 	//       with another BYTE vairable or placefolder)
-
 	
 }SavegameGlobalDataFields;
 
