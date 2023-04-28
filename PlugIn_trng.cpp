@@ -609,23 +609,7 @@ void cbInitObjects(void)
 // Direct3D Draw Sub-routine.
 void cbDirect3DDraw(void)
 {
-	// TODO: Remove.
-	Get(enumGET.GAME_INFO, 0, 0);
-	if (GET.GameInfo.LevelIndex != 1)
-		return;
-
-	Get(enumGET.ITEM, 21 | NGLE_INDEX, 0);
-	// Get(enumGET.LARA, 0, 0);
-	// int dist = GetDistanceXZY(GET.pLara->CordX, GET.pLara->CordY, GET.pLara->CordZ, GET.pItem->CordX, GET.pItem->CordY, GET.pItem->CordZ);
-
-	char buffer[20];
-	// Object buttons -> 32768 when picked up.
-	itoa((int)GET.pItem->Objectbuttons, &buffer[0], 10);
-	RECT pRect;
-	pRect.left = 500;
-	pRect.top = 500;
-	ConvertMicroUnits(&pRect);
-	PrintText(500, 500, &buffer[0], enumFT.SIZE_ATOMIC_CHAR, enumFC.WHITE, enumFTS.ALIGN_CENTER);
+	
 }
 
 
