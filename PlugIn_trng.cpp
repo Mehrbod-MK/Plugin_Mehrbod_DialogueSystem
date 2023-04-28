@@ -540,7 +540,7 @@ void cbParametersMine(WORD ParameterValue, int NumberOfItems, short *pItemArray)
 // this procedure will be called every game cycle (at begin of cycle)
 void cbCycleBegin(void)
 {
-	Get(enumGET.GAME_INFO, 0, 0);
+	/*Get(enumGET.GAME_INFO, 0, 0);
 	if (GET.GameInfo.LevelIndex == 1)
 	{
 		Get(enumGET.ITEM, 21 | NGLE_INDEX, 0);
@@ -551,7 +551,10 @@ void cbCycleBegin(void)
 		{
 			PerformTriggerGroup(4);
 		}
-	}
+	}*/
+
+	// Process PARAM_CHECK_INTERACTABLES with respect to Lara 3D position.
+	Process_ObjectSystem_Param_Check_Interactables_With_Lara();
 }
 
 // Not yet linked! To link it add to RequireMyCallBacks() function the row:
@@ -716,4 +719,44 @@ BOOL APIENTRY DllMain( HINSTANCE hInstanceDll,
     return TRUE;
 }
 
+// Object System -> Checks interactable items with respect to Lara's coordinates.
+void	Process_ObjectSystem_Param_Check_Interactables_With_Lara()
+{
+	for (int i = 1; i <= SHRT_MAX; i++)
+	{
+		if (Get(enumGET.MY_PARAMETER_COMMAND, PARAM_CHECK_INTERACTABLES_WITH_LARA, i))
+		{
+			short paramId = GET.pParam->pVetArg[0];
+			short minDist = GET.pParam->pVetArg[1];
+			short maxDist = GET.pParam->pVetArg[2];
+			WORD objButtonFlagsToIgnore = GET.pParam->pVetArg[3];
+			short triggerGroupId_OnTrue = GET.pParam->pVetArg[4];
+			short triggerGroupId_OnFalse = GET.pParam->pVetArg[5];
 
+			bool isTrue = false;
+
+			for (int x = 6; x < GET.pParam->NArguments; x++)
+			{
+				WORD objIndex = GET.pParam->pVetArg[x];
+
+				if (Get(enumGET.ITEM, objIndex | NGLE_INDEX, 0))
+				{
+					if (objButtonFlagsToIgnore & GET.pItem->Objectbuttons)
+						continue;
+
+					Get(enumGET.LARA, 0, 0);
+					int dist = GetDistanceXZY(GET.pLara->CordX, GET.pLara->CordY, GET.pLara->CordZ,
+						GET.pItem->CordX, GET.pItem->CordY, GET.pItem->CordZ);
+
+					if (dist >= minDist && dist <= maxDist)
+					{
+						isTrue = true;
+						break;
+					}
+				}
+			}
+
+			isTrue ? PerformTriggerGroup(triggerGroupId_OnTrue) : PerformTriggerGroup(triggerGroupId_OnFalse);
+		}
+	}
+}

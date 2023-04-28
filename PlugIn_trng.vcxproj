@@ -98,6 +98,8 @@
     <ClInclude Include="functions.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="macros_mine.h" />
+    <ClInclude Include="objectSystem.h" />
+    <ClInclude Include="PlugIn_trng.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="structures.h" />
     <ClInclude Include="structures_mine.h" />
@@ -107,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dialogueSystem.cpp" />
+    <ClCompile Include="objectSystem.cpp" />
     <ClCompile Include="PlugIn_trng.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="trng.cpp" />

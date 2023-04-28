@@ -30,4 +30,8 @@
 // Mehrbod MK - Dialogue System Include.
 #include "dialogueSystem.h"
 
+// Mehrbod MK - Object System Include.
+#include "objectSystem.h"
+using namespace ObjectSystem;
 
+void	Process_ObjectSystem_Param_Check_Interactables_With_Lara();
