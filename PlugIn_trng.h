@@ -35,3 +35,4 @@
 using namespace ObjectSystem;
 
 void	Process_ObjectSystem_Param_Check_Interactables_With_Lara();
+void	Process_ObjectSystem_Param_Debug_Print_ItemInfos();

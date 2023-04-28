@@ -609,7 +609,7 @@ void cbInitObjects(void)
 // Direct3D Draw Sub-routine.
 void cbDirect3DDraw(void)
 {
-	
+	Process_ObjectSystem_Param_Debug_Print_ItemInfos();
 }
 
 
@@ -706,6 +706,11 @@ BOOL APIENTRY DllMain( HINSTANCE hInstanceDll,
 // Object System -> Checks interactable items with respect to Lara's coordinates.
 void	Process_ObjectSystem_Param_Check_Interactables_With_Lara()
 {
+	bool isTrue = false;
+
+	short triggerGroupId_OnTrue = 0;
+	short triggerGroupId_OnFalse = 0;
+
 	for (int i = 1; i <= SHRT_MAX; i++)
 	{
 		if (Get(enumGET.MY_PARAMETER_COMMAND, PARAM_CHECK_INTERACTABLES_WITH_LARA, i))
@@ -714,18 +719,19 @@ void	Process_ObjectSystem_Param_Check_Interactables_With_Lara()
 			short minDist = GET.pParam->pVetArg[1];
 			short maxDist = GET.pParam->pVetArg[2];
 			WORD objButtonFlagsToIgnore = GET.pParam->pVetArg[3];
-			short triggerGroupId_OnTrue = GET.pParam->pVetArg[4];
-			short triggerGroupId_OnFalse = GET.pParam->pVetArg[5];
+			WORD flagsMainToIgnore = GET.pParam->pVetArg[4];
+			triggerGroupId_OnTrue = GET.pParam->pVetArg[5];
+			triggerGroupId_OnFalse = GET.pParam->pVetArg[6];
 
-			bool isTrue = false;
-
-			for (int x = 6; x < GET.pParam->NArguments; x++)
+			for (int x = 7; x < GET.pParam->NArguments; x++)
 			{
 				WORD objIndex = GET.pParam->pVetArg[x];
 
 				if (Get(enumGET.ITEM, objIndex | NGLE_INDEX, 0))
 				{
 					if (objButtonFlagsToIgnore & GET.pItem->Objectbuttons)
+						continue;
+					else if (flagsMainToIgnore & GET.pItem->FlagsMain)
 						continue;
 
 					Get(enumGET.LARA, 0, 0);
@@ -740,7 +746,30 @@ void	Process_ObjectSystem_Param_Check_Interactables_With_Lara()
 				}
 			}
 
-			isTrue ? PerformTriggerGroup(triggerGroupId_OnTrue) : PerformTriggerGroup(triggerGroupId_OnFalse);
+			if (isTrue)
+				break;
+		}
+	}
+
+	isTrue ? PerformTriggerGroup(triggerGroupId_OnTrue) : PerformTriggerGroup(triggerGroupId_OnFalse);
+}
+
+// Object System -> Prints NGLE item information on graphical screen.
+void Process_ObjectSystem_Param_Debug_Print_ItemInfos()
+{
+	if (Get(enumGET.MY_PARAMETER_COMMAND, PARAM_DEBUG_PRINT_ITEM_INFOS, -1))
+	{
+		int itemIndex = GET.pParam->pVetArg[0];
+		if (Get(enumGET.ITEM, itemIndex | NGLE_INDEX, 0))
+		{
+			const char textFormat[] = "Item NGLE index:\t%d\nFlagsMain:\t%d\nObjectButtons:\t%d\n";
+			char prompt[1024] = { '\0' };
+			sprintf(&prompt[0], &textFormat[0], itemIndex, GET.pItem->FlagsMain, GET.pItem->Objectbuttons);
+			RECT rect;
+			rect.left = 20;
+			rect.top = 350;
+			ConvertMicroUnits(&rect);
+			PrintText(rect.left, rect.top, &prompt[0], enumFT.SIZE_ATOMIC_CHAR, enumFC.WHITE, enumFTS.ALIGN_LEFT);
 		}
 	}
 }
